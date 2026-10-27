@@ -1,0 +1,292 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\setstretch{1.18}
+\titleformat{\chapter}{\normalfont\huge\bfseries}{\thechapter}{1em}{}
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1.2cm}
+{\Large [UNIVERSITY NAME]\par}
+\vspace{0.3cm}
+{\large [DEPARTMENT NAME]\par}
+\vspace{1.8cm}
+{\Huge\bfseries SmartFind AIoT\par}
+\vspace{0.4cm}
+{\Large AI-Powered Lost \& Found Hub with IoT-Enabled Collection Monitoring\par}
+\vspace{1.5cm}
+{\large Initial Software Project Proposal\par}
+\vfill
+\begin{tabular}{rl}
+\textbf{Submitted by:} & [STUDENT NAME]\\
+\textbf{Student ID:} & [STUDENT ID]\\
+\textbf{Course:} & Software Engineering \& Project Management\\
+\textbf{Course Code:} & [COURSE CODE]\\
+\textbf{Submitted to:} & [TEACHER NAME]\\
+\textbf{Submission date:} & [DATE]\\
+\textbf{GitHub repository:} & [GITHUB URL]\\
+\end{tabular}
+\vfill
+{\large Initial version -- for academic review\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+SmartFind AIoT is a proposed campus lost-and-found service that centralizes lost and found reports, uses an AI-assisted matching service to recommend potentially related reports, and records physical item intake at designated collection points through an ESP8266-based Internet of Things (IoT) device. The application layer is planned in Java, MySQL will persist reports and collection events, and a Python service will calculate text-similarity scores. The platform will not automatically decide ownership: authorized staff will verify claims and confirm handover. The project will be developed incrementally using an Agile-inspired iterative process, with requirements, design, implementation, testing, and evaluation tracked through defined milestones and deliverables. This proposal specifies the problem, objectives, scope, requirements, architecture, diagrams, schedule, risks, and an initial interface prototype.
+
+\chapter*{Document Control}
+\begin{tabular}{ll}
+Version & 0.1 -- Initial proposal\\
+Status & Draft for instructor review\\
+Project type & Academic software engineering project\\
+Planned duration & 12 weeks (illustrative; confirm course dates)\\
+Primary users & Students, staff, and collection-point administrators\\
+\end{tabular}
+
+\tableofcontents
+\listoftables
+\clearpage
+\pagenumbering{arabic}
+
+\chapter{Introduction}
+\section{Background}
+Belongings are frequently misplaced in universities, while found objects may be reported through informal conversations, social-media posts, or physical offices. These fragmented channels make reports difficult to search and compare. SmartFind AIoT proposes one searchable hub, an AI-assisted recommendation mechanism, and a simple electronic record of physical items accepted at a designated collection point.
+
+\section{Problem Statement}
+The absence of a centralized, searchable record can lead to duplicate reports, delayed discovery, incomplete collection records, and uncertainty about an item's current status. Keyword-only searching may also miss reports that describe the same object in different words. A digital system that recommends possible matches and logs intake events could reduce manual effort, but it must preserve privacy and ensure that people—not an algorithm—verify ownership.
+
+\section{Proposed Solution}
+Users submit lost/found reports containing a category, description, date, approximate location, optional photograph, and contact preference. The application stores the report and requests ranked candidate matches from a Python service. A collection-point ESP8266 sends an intake event containing a device identifier, event identifier, timestamp, and report/item reference. Staff review matches, validate claims using non-public details or evidence, and record handover.
+
+\section{Objectives}
+\begin{enumerate}[label=\arabic*.]
+\item Provide a centralized way to create, view, search, and update lost/found reports.
+\item Recommend potentially matching reports using explainable text-similarity scores.
+\item Record collection-point intake events from an ESP8266 device.
+\item Maintain item status and an auditable human-verification/handover workflow.
+\item Evaluate usability, matching quality, response time, and intake-event reliability.
+\end{enumerate}
+
+\section{Success Criteria}
+\begin{itemize}
+\item A user can create and view a report through the prototype interface.
+\item The matching service returns ranked candidates and a numeric score for valid input.
+\item The database schema represents reports, users, matches, collection points, intake events, and handovers.
+\item Repeated intake events with the same event identifier can be detected and not counted twice.
+\item A handover cannot be marked complete without an authorized human verification action.
+\item A small documented evaluation reports precision@k or manually judged match relevance, latency, and test outcomes.
+\end{itemize}
+
+\chapter{Feasibility and Stakeholders}
+\section{Stakeholders}
+\begin{longtable}{p{0.23\textwidth}p{0.67\textwidth}}
+\toprule
+Stakeholder & Interest / responsibility\\\midrule
+Students and staff & Submit reports, browse results, initiate claims\\
+Lost-and-found officer & Verify ownership, manage storage, record handovers\\
+System administrator & Manage users, categories, collection points, and access\\
+Project developer & Requirements, design, implementation, tests, documentation\\
+Course instructor & Review project scope, process, artifacts, and final submission\\
+\bottomrule
+\end{longtable}
+
+\section{Technical Feasibility}
+The project uses common student-accessible technologies: Java, MySQL, Python with Flask and scikit-learn, and an ESP8266 development board. The proposed architecture is modular so the AI service and device can be tested independently. The prototype does not require a trained deep-learning model; a TF-IDF/cosine-similarity baseline is suitable for an initial proof of concept.
+
+\section{Operational Feasibility}
+The workflow resembles existing campus lost-and-found practices but makes records searchable and status visible. A designated staff member must own the physical collection process, and campus approval is needed before real deployment.
+
+\section{Economic Feasibility}
+Software tools are open-source. The main potential costs are an ESP8266 board, power supply, enclosure, Wi-Fi access, optional storage labels, and hosting. Costs will be estimated locally before procurement; no price is assumed in this proposal.
+
+\section{Ethical and Legal Considerations}
+Only collect personal data needed for recovery. Avoid displaying phone numbers, student IDs, sensitive identifying details, or full-resolution photographs publicly. Use role-based access, consent for photos, retention rules, secure credentials, and an auditable handover record. The AI score is advisory, may be wrong, and must never establish ownership automatically.
+
+\chapter{Scope and Requirements}
+\section{In Scope}
+\begin{itemize}
+\item Lost and found report creation, listing, search, and status updates.
+\item Candidate matching from text descriptions with a score and ranked results.
+\item Collection-point registration and ESP8266 intake-event logging.
+\item Staff review, claim verification, and handover recording.
+\item Basic role-aware application design, database schema, testing, and documentation.
+\end{itemize}
+
+\section{Out of Scope for Initial Version}
+\begin{itemize}
+\item Production-grade facial recognition or image-based identity inference.
+\item Automatic ownership decisions or automatic item release.
+\item Payment, delivery, inter-university exchange, and campus-wide identity-provider integration.
+\item Guaranteed continuous IoT connectivity or industrial-grade hardware enclosure.
+\item Large-scale model training and production cloud deployment.
+\end{itemize}
+
+\section{Functional Requirements}
+\begin{longtable}{p{0.12\textwidth}p{0.73\textwidth}p{0.1\textwidth}}
+\toprule
+ID & Requirement & Priority\\\midrule
+FR-01 & A user can create a lost or found report with description, category, date, and approximate location. & Must\\
+FR-02 & A user can attach an optional photograph subject to file type and size validation. & Should\\
+FR-03 & A user can search and filter reports by type, category, date, and location. & Must\\
+FR-04 & The system requests ranked possible matches from the Python AI service. & Must\\
+FR-05 & The system stores match candidates, score, and review status. & Must\\
+FR-06 & Authorized staff can update item/report status. & Must\\
+FR-07 & The collection-point device can submit an intake event to an application endpoint. & Must\\
+FR-08 & Duplicate event IDs are detected and do not create duplicate intake records. & Must\\
+FR-09 & Staff can record claim verification and handover details. & Must\\
+FR-10 & The system keeps an audit trail for important status and handover changes. & Should\\
+FR-11 & Administrators can manage categories and collection-point device registrations. & Could\\
+\bottomrule
+\end{longtable}
+
+\section{Non-Functional Requirements}
+\begin{longtable}{p{0.14\textwidth}p{0.7\textwidth}p{0.12\textwidth}}
+\toprule
+ID & Requirement & Target / approach\\\midrule
+NFR-01 & Usability: report creation should be understandable to a first-time user. & 5-user pilot\\
+NFR-02 & Performance: text matching should respond quickly for a small demonstration dataset. & Target under 2 s locally\\
+NFR-03 & Security: passwords and secrets must not be stored in source control in plaintext. & Review checklist\\
+NFR-04 & Privacy: public views must not expose private contact details. & Access tests\\
+NFR-05 & Reliability: repeated IoT event identifiers should be idempotent. & Duplicate-event test\\
+NFR-06 & Maintainability: application, AI service, database, and firmware are separated. & Modular structure\\
+NFR-07 & Explainability: show match score and relevant textual basis where feasible. & Score displayed\\
+NFR-08 & Availability: prototype is demonstrated on a local development network. & Demo checklist\\
+\bottomrule
+\end{longtable}
+
+\section{User Stories}
+\begin{itemize}
+\item As a student, I want to report a lost item so that other users can help identify it.
+\item As a finder, I want to report an item without publishing sensitive details.
+\item As a user, I want to see likely matches so that I do not need to inspect every report.
+\item As a collection officer, I want intake events logged so that physical items have traceable records.
+\item As an officer, I want to verify a claimant before handover so that items are not released to the wrong person.
+\end{itemize}
+
+\chapter{Development Process and Project Management}
+\section{Selected Process Model}
+An Agile-inspired iterative model is selected because the project contains separable components and requirements may evolve after interface and matching tests. Work will be divided into short iterations, with a review at the end of each iteration. Lightweight stage gates ensure that requirements, architecture, testing, and documentation are not skipped.
+
+\section{Iteration Plan}
+\begin{enumerate}
+\item Iteration 1 (Weeks 1--2): stakeholder analysis, problem definition, requirements, feasibility.
+\item Iteration 2 (Weeks 3--4): architecture, UML/DFD/ER design, database schema, UI wireframe.
+\item Iteration 3 (Weeks 5--6): Java interface/domain classes and MySQL schema implementation.
+\item Iteration 4 (Weeks 7--8): Python matching service and integration tests.
+\item Iteration 5 (Weeks 9--10): ESP8266 intake event prototype and end-to-end integration.
+\item Iteration 6 (Weeks 11--12): system testing, usability evaluation, fixes, final report, demonstration.
+\end{enumerate}
+
+\section{Roles}
+For an individual assignment, the student performs all developer roles. The instructor acts as reviewer; prospective users or classmates may participate in usability feedback if approved. Any real campus deployment requires a designated staff owner.
+
+\section{Change Management}
+New requests will be recorded in an issue list with a brief impact estimate. Changes affecting privacy, ownership verification, or core scope require explicit review before implementation. The baseline schedule is illustrative and should be adjusted to the actual course calendar.
+
+\chapter{System Design}
+\section{Architecture}
+The proposed system has four main layers:
+\begin{enumerate}
+\item User interface and Java application layer: report workflows, authorization, business rules, and API orchestration.
+\item MySQL persistence layer: users, reports, match candidates, collection points, intake events, claims, and handovers.
+\item Python AI service: preprocessing, TF-IDF vectorization, cosine similarity, and ranked candidate response.
+\item IoT collection point: ESP8266 sends an authenticated, uniquely identified intake event over Wi-Fi.
+\end{enumerate}
+The academic prototype may run these components locally. In a complete implementation, the Java application should call the AI service through a defined HTTP API and validate all device events server-side.
+
+\section{Data Flow}
+A user submits a report; Java validates it and stores it in MySQL. The matching service compares its description against eligible opposite-type reports and returns ranked candidates. The user or staff member reviews recommendations. When an item is physically accepted, the ESP8266 sends an intake event; the application validates the device and records it. Staff later verify claims and record a handover.
+
+\section{AI Matching Method}
+The initial baseline combines normalized text fields (description, category, and approximate location) into a text representation. TF-IDF transforms the text into weighted vectors, and cosine similarity ranks candidates. This is a recommendation mechanism, not proof of identity. The evaluation will use manually labelled report pairs where available, and report precision@3 plus false-positive examples. Image similarity is a possible future enhancement, not part of the initial baseline.
+
+\section{IoT Event Design}
+A proposed event contains `event_id`, `device_id`, `report_id` or item reference, `event_type`, and a timestamp. The server validates the device, checks the unique event ID, and acknowledges receipt. The device must not store personal claimant details. If network delivery fails, a future firmware iteration may add retry and local buffering.
+
+\section{Core Data Entities}
+\begin{itemize}
+\item User: role and minimal account/contact details.
+\item ItemReport: lost/found report, description, category, date, location, status.
+\item MatchCandidate: two report references, score, review state, creation time.
+\item CollectionPoint: named physical location and registered device.
+\item IntakeEvent: unique event ID, device, item/report reference, timestamp, processing status.
+\item Claim: claimant, report, claim details, verification status.
+\item Handover: verified claim, staff member, time, and confirmation record.
+\end{itemize}
+
+\section{UML and Modeling Artifacts}
+The source files are in `diagrams/`. They cover the required Data Flow Diagram, Use Case Diagram, Activity Diagram, Entity Relationship Diagram, Class Diagram, and Object Diagram. Mermaid and PlantUML source can be rendered using compatible editors or command-line tools. The diagrams represent the proposed initial design and may change during implementation.
+
+\chapter{Interface Prototype}
+A simple Java Swing prototype is included in `java-interface/`. It uses more than five classes from the design: `User`, `ItemReport`, `MatchCandidate`, `CollectionPoint`, `IntakeEvent`, `SmartFindService`, and `SmartFindApp`. The initial interface supports entering a sample report, adding it to an in-memory list, and showing sample AI-match recommendations. It is intentionally a demonstration UI; database and HTTP integration are future integration tasks.
+
+\chapter{Schedule, Milestones, and Deliverables}
+The 12-week schedule, task dependencies, milestones, and deliverables are detailed in `../docs/GANTT.md`. Dates are relative weeks because the course's exact start date has not been supplied.
+
+\begin{longtable}{p{0.13\textwidth}p{0.48\textwidth}p{0.28\textwidth}}
+\toprule
+Milestone & Exit criteria & Deliverable\\\midrule
+M1 -- Requirements approved & Scope, users, functional and non-functional requirements reviewed & SRS / proposal draft\\
+M2 -- Design baseline & Architecture and all required diagrams prepared & Design package\\
+M3 -- UI and schema prototype & Java UI runs; schema is executable in development MySQL & Interface + SQL\\
+M4 -- AI matching demo & API returns ranked candidate matches & Python service + test cases\\
+M5 -- IoT intake demo & ESP8266 event format and receiver path tested or simulated & Firmware + event protocol\\
+M6 -- Final evaluation & Integration checks, risks, limitations, and results documented & Final report + demo\\
+\bottomrule
+\end{longtable}
+
+\chapter{Testing and Evaluation}
+\section{Test Levels}
+\begin{itemize}
+\item Unit tests: report validation, text normalization, score ranking, event-ID validation.
+\item Integration tests: Java-to-database and Java-to-AI API boundaries; device event to intake record.
+\item System tests: create report, generate candidate list, record intake, verify claim, and complete handover.
+\item Usability evaluation: a small consented pilot with task completion observations and short feedback.
+\item Security/privacy checks: authorization boundaries, input validation, secret handling, and public/private field visibility.
+\end{itemize}
+
+\section{Evaluation Metrics}
+Matching: precision@3 on a small manually labelled dataset and qualitative review of false positives. Performance: response time over repeated local test requests. Reliability: percentage of valid intake events acknowledged and number of duplicate records created under repeated delivery. Usability: task completion rate and participant feedback. Results must be reported honestly with dataset size and limitations.
+
+\chapter{Risk Management}
+\begin{longtable}{p{0.08\textwidth}p{0.3\textwidth}p{0.12\textwidth}p{0.4\textwidth}}
+\toprule
+ID & Risk & Level & Mitigation\\\midrule
+R1 & AI recommends unrelated items & High & Human verification; tune thresholds; document false positives\\
+R2 & Personal data or photographs exposed & High & Minimize data, restrict access, avoid public contact details, define retention\\
+R3 & ESP8266 loses Wi-Fi connectivity & Medium & Acknowledge events; retry strategy; test simulated failures\\
+R4 & Integration takes longer than planned & High & Build components independently; use stable API contracts and weekly checkpoints\\
+R5 & Insufficient evaluation examples & Medium & Create synthetic examples and clearly label them; seek approved volunteer reports\\
+R6 & Scope expands beyond course time & Medium & Prioritize Must requirements; defer image AI and production deployment\\
+R7 & Credentials are committed to GitHub & High & Environment configuration, `.gitignore`, secret scan before push\\
+R8 & Unverified person claims an item & High & Staff-only verification and explicit handover authorization\\
+\bottomrule
+\end{longtable}
+
+\chapter{Expected Outcomes and Future Work}
+The expected outcome is a documented proof of concept that demonstrates centralized reports, AI-assisted candidate ranking, an IoT intake-event pathway, and a human-controlled recovery process. Future work may include image similarity, campus authentication, notification delivery, offline device buffering, accessibility improvements, deployment monitoring, and a larger real-world evaluation subject to institutional approval.
+
+\chapter{Conclusion}
+SmartFind AIoT combines conventional software engineering with a bounded AI recommendation component and an IoT event source to address a practical campus problem. Its design prioritizes traceability, privacy, and human verification. The proposed iterative schedule provides measurable deliverables while keeping the first version achievable for an individual academic project.
+
+\begin{thebibliography}{9}
+\bibitem{pressman} R. S. Pressman and B. R. Maxim, \textit{Software Engineering: A Practitioner's Approach}, 9th ed., McGraw-Hill, 2019.
+\bibitem{sommerville} I. Sommerville, \textit{Software Engineering}, 10th ed., Pearson, 2015.
+\bibitem{flask} Pallets Projects, ``Flask Documentation.'' \url{https://flask.palletsprojects.com/}
+\bibitem{scikit} scikit-learn developers, ``Feature Extraction and Text Similarity.'' \url{https://scikit-learn.org/stable/modules/feature_extraction.html}
+\bibitem{mysql} Oracle, ``MySQL Reference Manual.'' \url{https://dev.mysql.com/doc/}
+\bibitem{esp} Espressif Systems, ``ESP8266EX Documentation.'' \url{https://www.espressif.com/en/products/socs/esp8266}
+\end{thebibliography}
+\end{document}
